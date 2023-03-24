@@ -3,13 +3,14 @@ import axios from "axios";
 import LoadMoreButton from './load-more';
 import { createImageInfo } from "./create_html_elem";
 import { useSimpleLightBoxLibrary } from './create_html_elem';
+import { onLoadMore } from './index';
 //import InfiniteScrollModule from "ngx-infinite-scroll";
 import InfiniteScroll from 'infinite-scroll';
 import NaturalGallery from '@ecodev/natural-gallery-js';
 
 const KEY = "34461243-d0245d06d5a649c5dc9c3b27c";
 const BASE_URL = "https://pixabay.com/api/"
-const filter = "&image_type=photo&orientation=horizontal&safesearch=true&per_page=40";
+const filter = "&image_type=photo&orientation=horizontal&safesearch=true&per_page=200";
 const imageList = document.querySelector(".gallery");
 const loadMoreButton = new LoadMoreButton({
     selector: '.load-more',
@@ -24,33 +25,18 @@ let pageNumber = 1;
 //     console.log(res.data);
 //   });
 
-async function getUser() {
-  try {
-    const response = await axios.get('/user?ID=12345');
-    console.log(response);
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 export default class ImagesApiServices {
-
     async fetchImages() {
         const URL = `${BASE_URL}?key=${KEY}&q=${searching}${filter}&page=${pageNumber}`;
-        const response = await fetch(URL);
-        return await response.json()
-        .then(takeData)
-        .catch(error); 
-//          try {
-//     const response = await axios.get(URL);
-//               console.log(response.data.hits);
-//               response.data.hits = takeData;
-//   } catch (error) {
-//     error();
-//   }
+        try {
+            const response = await axios.get(URL);
+            createImageInfo(response.data.hits);
+            takeData();
+            takeInfoMessages(response);
+        } catch (error) {
+            error();
+       }
     };
- 
-
     resetPage() {
         this.page = 1;
     };
@@ -65,30 +51,54 @@ export default class ImagesApiServices {
     };
 };
 
-const takeData = (data) => {
-    console.log(data.hits);
+//const imageApiServices = new ImagesApiServices();
+const error = () => {
+   Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
+};    
+
+const takeData = () => {
     pageNumber += 1;
-    createImageInfo(data.hits);
     loadMoreButton.enable();
     useSimpleLightBoxLibrary();
-    // return function loading(){
-    // const infScroll = new InfiniteScroll( imageList, {
-    //     path: URL,
-    //     append: createImageInfo(data.hits),
-    //     responseBody: 'json',
-    // });
-    // };
-    if (data.hits.length === 0) {
+};
+
+export const takeInfoMessages = (response) => {
+    if (response.data.hits.length === 0) {
         Notiflix.Notify.failure(`Sorry, there are no images matching your search query. Please try again.`);
         loadMoreButton.hide();
     } else {
-        Notiflix.Notify.success(`Hooray! We found ${data.total} images`);
+        Notiflix.Notify.success(`Hooray! We found ${response.data.total} images`);
     };
-};
+    // if (response.data.hits.length === 0) {
+    //     Notiflix.Notify.failure(`Sorry, there are no images matching your search query. Please try again.`);
+    //     loadMoreButton.hide();
+    // } else if (response.data.hits.length > 0 &&  response.data.hits.length < 40) {
+    //     Notiflix.Notify.info('We\'re sorry, but you\'ve reached the end of search results.');
+    //     loadMoreButton.hide();
+    // };
+    //     Notiflix.Notify.success(`Hooray! We found ${response.data.total} images`);
+    // if (onLoadMore) {
+    //     Notiflix.Notify = null;
+    // };
+ };   
 
-const error = () => {
-   Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
-};
+
+
+// const body = document.body;
+// body.addEventListener('scroll', loading)
+
+    // function loading(){
+    // return infScroll = new InfiniteScroll( createImageInfo, {
+    //     path: imageApiServices.fetchImages,
+    //     // append: createImageInfo(letmeknow),
+    //     // responseBody: 'json',
+    // });
+    // };
+
+
+// const error = () => {
+   
+// };
 
 
 

@@ -4,7 +4,7 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 const imageList = document.querySelector(".gallery");
 
 export function createImageInfo(image) {
-  allImagesInfo = image.reduce(
+  const allImagesInfo = image.reduce(
     (acc, image) => acc +
     `<div class="photo-card">
       <a class="gallery__item" href="${image.largeImageURL}">

@@ -33,9 +33,10 @@ export default class ImagesApiServices {
             createImageInfo(response.data.hits);
             takeData();
             takeInfoMessages(response);
-        } catch (error) {
-            error();
-       }
+        }
+        catch (error) {
+        console.log(error);
+        }
     };
     resetPage() {
         this.page = 1;

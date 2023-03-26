@@ -17,25 +17,25 @@ const loadMoreButton = new LoadMoreButton({
     hidden: true,
 });
 
-let searching = '';
-let pageNumber = 1;
-
-// axios.get('/users')
-//   .then(res => {
-//     console.log(res.data);
-//   });
-
 export default class ImagesApiServices {
-    async fetchImages() {
-        const URL = `${BASE_URL}?key=${KEY}&q=${searching}${filter}&page=${pageNumber}`;
+    constructor() {
+        this.searching = '';
+        this.page = 1;
+    };
+     async fetchImages(eventName) {
+        if (eventName === "search") {
+            this.page = 1;
+        }
+        const URL = `${BASE_URL}?key=${KEY}&q=${this.searching}${filter}&page=${this.page}`;
         try {
             const response = await axios.get(URL);
+            console.log(URL);
             createImageInfo(response.data.hits);
-            takeData();
             takeInfoMessages(response);
+            this.takeData();
         }
         catch (error) {
-        console.log(error);
+        this.error;
         }
     };
     resetPage() {
@@ -44,24 +44,22 @@ export default class ImagesApiServices {
     clearPage() { 
         imageList.innerHTML = '';
     };
+    takeData() {
+        this.page += 1;
+        loadMoreButton.enable();
+        useSimpleLightBoxLibrary();
+    };
+    error = () => {
+    Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
+    }; 
     get query() {
-        searching;
+        this.searching;
     };
     set query(newQuery) {
-        searching = newQuery;
+        this.searching = newQuery;
     };
-};
+};   
 
-//const imageApiServices = new ImagesApiServices();
-const error = () => {
-   Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
-};    
-
-const takeData = () => {
-    pageNumber += 1;
-    loadMoreButton.enable();
-    useSimpleLightBoxLibrary();
-};
 
 export const takeInfoMessages = (response) => {
     if (response.data.hits.length === 0) {
@@ -73,14 +71,12 @@ export const takeInfoMessages = (response) => {
     // if (response.data.hits.length === 0) {
     //     Notiflix.Notify.failure(`Sorry, there are no images matching your search query. Please try again.`);
     //     loadMoreButton.hide();
-    // } else if (response.data.hits.length > 0 &&  response.data.hits.length < 40) {
+    // if (response.data.hits.length > 0 &&  response.data.hits.length < 40) {
     //     Notiflix.Notify.info('We\'re sorry, but you\'ve reached the end of search results.');
     //     loadMoreButton.hide();
     // };
     //     Notiflix.Notify.success(`Hooray! We found ${response.data.total} images`);
-    // if (onLoadMore) {
-    //     Notiflix.Notify = null;
-    // };
+
  };   
 
 

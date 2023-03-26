@@ -1,24 +1,20 @@
 import ImagesApiServices from './api-services';
 import LoadMoreButton from './load-more';
 import Notiflix from 'notiflix';
+import { createImageInfo } from './create_html_elem';
 
-// const axios = require('axios/dist/browser/axios.cjs'); // browser
-// const axios = require('axios/dist/node/axios.cjs'); // node
 
 const imageApiServices = new ImagesApiServices();
 const loadMoreButton = new LoadMoreButton({
     selector: '.load-more',
     hidden: true,
 });
-console.log(loadMoreButton);
-const imageList = document.querySelector(".gallery");
-const imageInfo = document.querySelector(".photo-card");
 
 const refs = {
     input: document.querySelector('[name="searchQuery"]'),
     form: document.querySelector('#search-form'),
-//    loadMoreButton: document.querySelector('.load-more'),
 };
+
 refs.form.addEventListener('submit', onSearch);
 loadMoreButton.refs.button.addEventListener('click', onLoadMore);
 
@@ -30,11 +26,9 @@ function onSearch(event) {
     if (event.currentTarget.elements.searchQuery.value.length < 2) {
         Notiflix.Notify.warning('Please enter at least two characters');
     } else {
-        imageApiServices.fetchImages();
-    //    loadMoreButton.hide();
+        imageApiServices.fetchImages("search");
+       loadMoreButton.hide();
     };
-
-
     imageApiServices.resetPage();
     imageApiServices.clearPage();
     loadMoreButton.show();
@@ -42,11 +36,16 @@ function onSearch(event) {
 };
 
 export function onLoadMore() { 
-    imageApiServices.fetchImages();
+   imageApiServices.fetchImages("loadMore").then(value => {
+    console.log(value);
+  })
+  .catch(error());
 };
 
-
-
+// function error() {
+//     if ([imageApiServices.fetchImages()].length < 40)
+//     Notiflix.Notify.info(`We're sorry, but you've reached the end of search results.`);
+//     };
 
 
 

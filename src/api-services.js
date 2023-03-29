@@ -10,7 +10,7 @@ import NaturalGallery from '@ecodev/natural-gallery-js';
 
 const KEY = "34461243-d0245d06d5a649c5dc9c3b27c";
 const BASE_URL = "https://pixabay.com/api/"
-const filter = "&image_type=photo&orientation=horizontal&safesearch=true&per_page=200";
+const filter = "&image_type=photo&orientation=horizontal&safesearch=true&per_page=40";
 const imageList = document.querySelector(".gallery");
 const loadMoreButton = new LoadMoreButton({
     selector: '.load-more',

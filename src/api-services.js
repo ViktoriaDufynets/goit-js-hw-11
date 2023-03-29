@@ -30,13 +30,18 @@ export default class ImagesApiServices {
         try {
             const response = await axios.get(URL);
             console.log(URL);
+            console.log(response.status)
             createImageInfo(response.data.hits);
-            takeInfoMessages(response);
+            if (eventName === "search") {
+                takeInfoMessages(response);
+             };
             this.takeData();
         }
         catch (error) {
-        this.error;
+        this.error();
+        console.log(error)
         }
+        
     };
     resetPage() {
         this.page = 1;

@@ -25,21 +25,20 @@ function onSearch(event) {
     
     if (event.currentTarget.elements.searchQuery.value.length < 2) {
         Notiflix.Notify.warning('Please enter at least two characters');
+        loadMoreButton.hide();
     } else {
-        imageApiServices.fetchImages("search");
-       loadMoreButton.hide();
+       imageApiServices.fetchImages("search");
+       imageApiServices.resetPage();
+       imageApiServices.clearPage();
+       loadMoreButton.show();
+       loadMoreButton.disable();
+
     };
-    imageApiServices.resetPage();
-    imageApiServices.clearPage();
-    loadMoreButton.show();
-    loadMoreButton.disable();
+
 };
 
 export function onLoadMore() { 
-   imageApiServices.fetchImages("loadMore").then(value => {
-    console.log(value);
-  })
-  .catch(error());
+   imageApiServices.fetchImages("loadMore");
 };
 
 // function error() {
